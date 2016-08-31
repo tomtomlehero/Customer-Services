@@ -1,0 +1,694 @@
+swagger: '2.0'
+info:
+  title: Customer API
+  description: "Possible view for Customers are:<ul><li><b><u>full:</u></b> all available fragments</li><li><b><u>basic:</u></b>fragments identity + status</li><li><b><u>contact:</u></b> fragments identity+ status + addresses + phones + emails</li><li><b><u>cards:</u></b> fragments identity + status + cards</li></li>"
+  version: '1.0'
+host: api.customer.com
+schemes:
+  - https
+basePath: /customerRep/v1
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  '/customers/':
+    get:
+      operationId: searchCustomers
+      summary: Search a list of customers given a list of criteria
+      description: "Search a list of customers given a list of criteria. The permitted combinations of parameters are: (firstName,lastName,soundex), (email), (phone), (extId)."
+      tags:
+        - Customer
+      parameters:
+        - name: firstName
+          description: First Name of the customer
+          in: query
+          type: string
+        - name: lastName
+          description: Last Name of the customer
+          in: query
+          type: string
+        - name: phone
+          description: Phone Number of the customer
+          in: query
+          type: string
+        - name: email
+          description: E-Mail of the customer
+          in: query
+          type: string
+        - name: extId
+          description: "Cross reference details.<br/>Parameter format is <code>&lt;ApplicationOwner&gt;:&lt;ApplicationCode&gt;:&lt;ObjectType&gt;:&lt;ObjectId&gt;</code><br/>Example: <code>EC:GWY:DVR:123456</code>"
+          in: query
+          type: string
+        - name: soundex
+          description: "Wether or not the search should be done phonetically (with soundex algorithm). Default is false."
+          in: query
+          type: boolean
+        - name: view
+          description: Many views of customer are avaialble.
+          in: query
+          type: string
+          enum:
+          - basic
+          - contact
+          - full
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Customer'
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+    post:
+      operationId: createCustomer
+      summary: Create a new Customer
+      description: Create a new Customer
+      tags:
+        - Customer
+      parameters:
+        - name: customer
+          in: body
+          description: "The customer data to be created."
+          required: true
+          schema:
+            $ref: '#/definitions/Customer'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/CustomerId'
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+  '/customers/{id}':
+    get:
+      operationId: viewCustomer
+      summary: View Customer details
+      description: View Customer details
+      tags:
+        - Customer
+      parameters:
+        - name: id
+          in: path
+          description: Customer unique identifier
+          required: true
+          type: string
+        - name: view
+          description: Many views of customer are avaialble.
+          in: query
+          type: string
+          enum:
+          - basic
+          - contact
+          - full
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Customer'
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+    put:
+      operationId: updateCustomer
+      summary: Update Customer details
+      description: Update Customer details
+      tags:
+        - Customer
+      parameters:
+        - name: id
+          in: path
+          description: Customer unique identifier
+          required: true
+          type: string
+        - name: customer
+          in: body
+          description: "The customer data to be updated."
+          required: true
+          schema:
+            $ref: '#/definitions/Customer'
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+    delete:
+      operationId: deleteCustomer
+      summary: Delete a Customer
+      description: Delete a Customer
+      tags:
+        - Customer
+      parameters:
+        - name: id
+          in: path
+          description: Customer unique identifier
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+  '/customers/{id}/cards':
+    post:
+      operationId: createCustomerCard
+      summary: Create a new Card for a given customer
+      description: Create a new Card for a given customer
+      tags:
+        - Customer
+      parameters:
+        - name: id
+          in: path
+          description: Customer identifier
+          required: true
+          type: string
+        - name: card
+          in: body
+          description: "The Card to be created."
+          required: true
+          schema:
+            $ref: '#/definitions/Card'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/CardId'
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+  '/customers/{id}/cards/{cardId}':
+    put:
+      operationId: updateCustomerCard
+      summary: Update Card for a given customer
+      description: Update Card for a given customer
+      tags:
+        - Customer
+      parameters:
+        - name: id
+          in: path
+          description: Customer identifier
+          required: true
+          type: string
+        - name: cardId
+          in: path
+          description: Card unique identifier
+          required: true
+          type: string
+        - name: card
+          in: body
+          description: "The Card to be updated"
+          required: true
+          schema:
+            $ref: '#/definitions/Card'
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+    delete:
+      operationId: deleteCustomerCard
+      summary: Delete a Card for a given customer
+      description: Delete a Card for a given customer
+      tags:
+        - Customer
+      parameters:
+        - name: id
+          in: path
+          description: Driver unique identifier
+          required: true
+          type: string
+        - name: cardId
+          in: path
+          description: Card unique identifier
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+definitions:
+  Customer:
+    description: Customer
+    type: object
+    required:
+    - id
+    - identity
+    - status
+    properties:
+      id:
+        type: string
+        format: uuid
+        minLength: 36
+        maxLength: 36
+      identity:
+          $ref: '#/definitions/Identity'
+      status:
+          $ref: '#/definitions/Status'
+      addresses:
+        type: array
+        maxLength: 3
+        items:
+          $ref: '#/definitions/Address'
+      phones:
+        type: array
+        maxLength: 3
+        items:
+          $ref: '#/definitions/Phone'
+      emails:
+        type: array
+        maxLength: 3
+        items:
+          $ref: '#/definitions/Email'
+      cards:
+        type: array
+        items:
+          $ref: '#/definitions/Card'
+      externalIDs:
+        description: "The value will be ignored in the update operation."
+        type: array
+        items:
+          $ref: '#/definitions/ExternalID'
+  Identity:
+    description: Identity
+    type: object
+    required:
+    - firstName
+    - lastName
+    - dateOfBirth
+    - gender
+    properties:
+      firstName:
+        type: string
+        maxLength: 30
+      lastName:
+        type: string
+        maxLength: 30
+      dateOfBirth:
+        type: string
+        format: date
+      gender:
+        type: string
+        minLength: 1
+        maxLength: 1
+        enum:
+          - M
+          - F
+      civility:
+        type: string
+        maxLength: 35
+      countryOfResidenceCd:
+        type: string
+        maxLength: 2
+      countryOfResidenceLb:
+        description: "The value will be ignored in the write operations."
+        type: string
+      languageCd:
+        type: string
+        maxLength: 5
+      prevLanguageCd:
+        type: string
+        maxLength: 2
+      indAuthOptin:
+        type: boolean
+  Status:
+    description: Status of the Customer
+    type: object
+    required:
+    - status
+    - type
+    - indAuthOptin
+    properties:
+      status:
+        description: "N= New, O= One Time, R= Repeat, I= Inactive"
+        type: string
+        maxLength: 1
+        enum:
+        - N
+        - O
+        - R
+        - I
+      type:
+        description: "C= Cold, H= Hot"
+        type: string
+        maxLength: 1
+        enum:
+        - C
+        - H
+      driverStatus:
+        description: "The value will be ignored in the write operations. Updated only by Greenway"
+        type: string
+        maxLength: 2
+      invalidatedAt:
+        type: string
+        format: date
+      indAuthOptin:
+        type: boolean
+      watchListed:
+        type: string
+        maxLength: 3
+  Address:
+    description: Address
+    type: object
+    required:
+    - id
+    - lines
+    - zipCd
+    - city
+    - countryCd
+    properties:
+      id:
+        description: The technical id of the address.
+        type: string
+        maxLength: 12
+      lines:
+        description: Address lines.
+        type: array
+        items:
+          type: string
+          maxLength: 35
+          minItems: 1
+          maxItems: 4
+      zipCd:
+        type: string
+        maxLength: 10
+      city:
+        type: string
+        maxLength: 25
+      countryCd:
+        type: string
+        maxLength: 2
+      countryLb:
+        description: "The value will be ignored in the write operations."
+        type: string
+      stateCityProvDept:
+        type: string
+        maxLength: 25
+      indAuthOptin:
+        type: boolean
+      main:
+        type: boolean
+      typeCd:
+        type: string
+        minLength: 1
+        maxLength: 1
+        enum:
+          - H
+          - P
+      approachType:
+        type: string
+        minLength: 1
+        maxLength: 1
+        enum:
+          - D
+          - B
+      status:
+        type: string
+        minLength: 1
+        maxLength: 1
+        enum:
+          - I
+  Phone:
+    description: Phone
+    type: object
+    required:
+    - id
+    - areaCd
+    - number
+    - typeCd
+    - main
+    - phoneType
+    - approachType
+    properties:
+      id:
+        type: string
+        maxLength: 12
+      areaCd:
+        type: string
+        maxLength: 10
+      number:
+        type: string
+        maxLength: 15
+      extension:
+        type: string
+        maxLength: 6
+      typeCd:
+        description: "It's possible to define only one phone by typeCd and by customer. F= Fax, M= Mobile, P= Phone"
+        type: string
+        minLength: 1
+        maxLength: 1
+        enum:
+          - F
+          - M
+          - P
+      normalizedNumber:
+        description: "The value will be ignored in the write operations."
+        type: string
+        maxLength: 16
+      confidenceRank:
+        description: "The value will be ignored in the write operations."
+        type: integer
+      indAuthOptin:
+        type: boolean
+      main:
+        type: boolean
+      phoneType:
+        type: string
+        minLength: 1
+        maxLength: 1
+        enum:
+          - H
+          - P
+      approachType: 
+        description: "D= default, B= Billing"
+        type: string
+        minLength: 1
+        maxLength: 1
+        enum:
+          - D
+          - B
+      status:
+        type: string
+        minLength: 1
+        maxLength: 1
+        enum:
+          - I
+      phoneMain:
+        type: boolean
+  Email:
+    description: Email
+    type: object
+    required:
+    - id
+    - email
+    - main
+    - emailType
+    - approachType
+    properties:
+      id:
+        type: string
+        maxLength: 12
+      email:
+        description: "The value will be ignored in the write operations."
+        type: string
+        format: email
+        maxLength: 260
+        minLength: 7
+      normalizedEmail:
+        type: string
+        maxLength: 260
+      confidenceRank:
+        description: "The value will be ignored in the write operations."
+        type: integer
+      indAuthOptin:
+        type: boolean
+      main:
+        type: boolean
+      emailType:
+        type: string
+        minLength: 1
+        maxLength: 1
+        enum:
+          - H
+          - P
+      approachType:
+        type: string
+        minLength: 1
+        maxLength: 1
+        enum:
+          - D
+          - B
+  Card:
+    description: Card
+    type: object
+    required:
+    - id
+    - typeCd
+    - number
+    properties:
+      id:
+        description: "The value MUST be null in the create operation."
+        type: string
+        maxLength: 12
+      typeCd:
+        description: It's possible to define many cards with the same typeCd by customer. 
+        type: string
+        minLength: 3
+        maxLength: 3
+        enum:
+        - CID
+        - PAS
+        - DVL
+        - ECC
+        - PTN
+      typeLb:
+        description: "The value will be ignored in the write operations."
+        type: string
+      subTypeCd:
+        type: string
+        maxLength: 3
+      subTypeDesc:
+        type: string
+        maxLength: 30
+      number:
+        type: string
+        maxLength: 12
+      issueCountryCd:
+        type: string
+        maxLength: 2
+      issueCountryLb:
+        description: "The value will be ignored in the write operations."
+        type: string
+        maxLength: 35
+      issueDate:
+        type: string
+        format: date
+      expirationDate:
+        type: string
+        format: date
+      confidenceRank:
+        description: "The value will be ignored in the write operations."
+        type: integer
+  ExternalID:
+    description: External Customer ID. 
+    type: object
+    properties:
+      uri:
+        type: string
+        format: uri
+        minLength: 8
+        description: "It's the ID of the customer in another application. The information is coded as an URI. The format of URI is the following: [ApplicationOwner]:[ApplicationCode]:[ObjectType]:[ObjectId]  where [ApplicationOwner] is a code for the owner of the application, [ApplicationCode] is a code for the application, [ObjectType] is the code of the object type in the application and [ObjectId] is the instance ID of the customer in the application. The maximum length of a code is three char. Example in Greenway with a driver: 'EC:GWY:DVR:1234567'" 
+      main:
+        type: boolean
+        default: true
+  CustomerId:
+    type: object
+    required:
+    - id
+    properties:
+      id:
+        description: "The id of the customer created by the API."
+        type: string
+        format: uuid
+        minLength: 36
+        maxLength: 36
+  CardId:
+    type: object
+    required:
+    - id
+    properties:
+      id:
+        description: "The id of the card created by the API."
+        type: string
+        maxLength: 12
+  error:
+    description: error
+    type: object
+    properties:
+      id:
+        type: string
+      description:
+        type: string
+      messages:
+        type: array
+        items:
+          type: string

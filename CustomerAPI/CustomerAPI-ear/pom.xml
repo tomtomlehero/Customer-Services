@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>CustomerAPI-ear</artifactId>
+	<name>CustomerAPI-ear</name>
+	<packaging>ear</packaging>
+
+	<parent>
+		<groupId>fr.mla.customerfirst</groupId>
+		<artifactId>CustomerAPI</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-ear-plugin</artifactId>
+				<configuration>
+					<generateApplicationXml>true</generateApplicationXml>
+					<applicationXml>${project.build.directory}/application.xml</applicationXml>
+					<filtering>true</filtering>
+					<defaultLibBundleDir>lib/</defaultLibBundleDir>
+					<skinnyWars>true</skinnyWars>
+					<modules>
+						<webModule>
+							<groupId>fr.mla.customerfirst</groupId>
+							<artifactId>CustomerAPI-war</artifactId>
+							<contextRoot>/customerRep</contextRoot>
+						</webModule>						
+					</modules>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+		
+	<dependencies>
+
+		<dependency>
+			<groupId>fr.mla.customerfirst</groupId>
+			<artifactId>CustomerAPI-war</artifactId>
+			<version>${project.version}</version>
+			<type>war</type>
+		</dependency>
+		
+<!--		<dependency>
+			<groupId>fr.mla.gwy.shared-libs</groupId>
+			<artifactId>shared-libs-def</artifactId>
+			<version>${project.version}</version>
+			<type>pom</type>
+		</dependency>		
+-->
+	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>dvpt-local</id>
+
+			<properties>
+				<ear-file>${project.build.finalName}.ear</ear-file>
+				<jboss-home>C:/MLA/dvpt/jboss-eap-6.3.2-EIS_JP_DR/standalone/deployments</jboss-home>
+			</properties>
+
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>1.8</version>
+						<executions>
+							<execution>
+								<phase>install</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<tasks>
+										<echo>--- Copying ${project.build.directory}/${ear-file}</echo>
+										<echo>--- to ${jboss-home}</echo>
+										<copy file="${project.build.directory}/${ear-file}"
+											  tofile="${jboss-home}/${ear-file}"/>
+									</tasks>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+
+<jboss-deployment-structure xmlns="urn:jboss:deployment-structure:1.2">
+	<deployment>
+		<exclude-subsystems>
+			<subsystem name="jaxrs" /> 
+			<subsystem name="webservices" />
+		</exclude-subsystems>
+		<exclusions>
+			<!--module name="org.slf4j" /-->
+			<module name="org.apache.log4j" />
+			<module name="asm.asm" />
+			<module name="javax.ws.rs.api" />
+			<module name="javaee.api" />
+		</exclusions>
+		<dependencies>
+			<module name="org.jboss.remote-naming" export="true" />
+			<module name="org.apache.cxf" slot="2.7.11" export="true" meta-inf="export" />
+			<module name="org.springframework.spring" slot="3.1.1" export="true" meta-inf="export" />
+			<module name="org.apache.commons.collections" export="true" />
+			<module name="org.apache.commons.httpclient" slot="3.0.1" export="true" />
+			<module name="org.slf4j" />
+			<module name="javax.xml.bind.api" export="true" />
+			<module name="javax.xml.ws.api" export="true" />
+			<module name="javax.jws.api" export="true" />
+			<module name="oracle.jdbc" export="true" />
+		</dependencies>
+	</deployment>
+
+	<sub-deployment name="CustomerAPI-war-${project.version}.war">
+		<exclusions>
+			<module name="org.slf4j" />
+			<module name="org.apache.log4j" />
+			<module name="javax.ws.rs.api" />
+			<module name="javaee.api" />
+		</exclusions>
+	</sub-deployment>
+
+</jboss-deployment-structure>

@@ -1,0 +1,1242 @@
+swagger: '2.0'
+info:
+  title: Driver API
+  description: "Possible view for Drivers are:
+                <ul>
+                 <li><b><u>full:</u></b> all available fragments</li>
+                 <li><b><u>basic:</u></b> fragments status + admin</li>
+                 <li><b><u>contact:</u></b> fragments status + admin + approachPoints</li>
+                 <li><b><u>driver:</u></b> fragments status + admin + approachPoints + licenses + legalIds</li>
+                </li>"
+  version: '1.0'
+host: api.driver.com
+schemes:
+  - https
+basePath: /driverService/v1
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  '/drivers':
+    get:
+      operationId: searchDrivers
+      summary: Search a list of drivers given a list of criteria
+      description: Search a list of drivers given a list of criteria<br/>Drivers are displayed with the view <b>basic</b>
+      tags:
+        - 00 - All
+        - 10 - Driver
+        - 20 - Search
+      parameters:
+        - name: firstName
+          in: query
+          type: string
+        - name: lastName
+          in: query
+          type: string
+        - name: phone
+          in: query
+          type: string
+        - name: email
+          in: query
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Driver'
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+  '/drivers/{driverId}':
+    get:
+      operationId: viewDriver
+      summary: View driver details
+      description: View driver details. Can be requested with a view parameter.
+      tags:
+        - 00 - All
+        - 10 - Driver
+        - 21 - Find
+      parameters:
+        - name: driverId
+          in: path
+          description: Driver unique identifier
+          required: true
+          type: string
+        - name: view
+          description: optional parameter for specifying the desired view for the driver. Default is <b>full</b>
+          in: query
+          type: string
+          enum:
+            - full
+            - basic
+            - contact
+            - driver
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Driver'
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+    put:
+      operationId: updateDriver
+      summary: Update driver details
+      description: Update driver details
+      tags:
+        - 00 - All
+        - 10 - Driver
+        - 23 - Update
+      parameters:
+        - name: driverId
+          in: path
+          description: Driver unique identifier
+          required: true
+          type: string
+        - name: drivers
+          in: body
+          description: The driver data to be updated
+          required: true
+          schema:
+            $ref: '#/definitions/Driver'
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+    delete:
+      operationId: deleteDriver
+      summary: Invalidates a Driver
+      description: Invalidates a Driver
+      tags:
+        - 00 - All
+        - 10 - Driver
+        - 24 - Delete
+      parameters:
+        - name: driverId
+          in: path
+          description: Driver unique identifier
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+  '/drivers/{driverId}/approachpoints':
+    get:
+      operationId: viewDriverApproachPoints
+      summary: View the list of Approach Points of the given driver [NOT YET IMPLEMENTED]
+      description: View the list of Approach Points of the given driver [NOT YET IMPLEMENTED]
+      tags:
+        - 00 - All
+        - 11 - Approach Points
+        - 21 - Find
+      parameters:
+        - name: driverId
+          in: path
+          description: Driver unique identifier
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ApproachPoint'
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+    post:
+      operationId: createDriverApproachPoint
+      summary: Create Approach Point for a given driver [NOT YET IMPLEMENTED]
+      description: Create Approach Point for a given driver [NOT YET IMPLEMENTED]
+      tags:
+        - 00 - All
+        - 11 - Approach Points
+        - 22 - Create
+      parameters:
+        - name: driverId
+          in: path
+          description: Driver unique identifier
+          required: true
+          type: string
+        - name: approachPoint
+          in: body
+          description: The Approach Point to be created
+          required: true
+          schema:
+            $ref: '#/definitions/ApproachPoint'
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+  '/drivers/{driverId}/approachpoints/{appId}':
+    put:
+      operationId: updateDriverApproachPoint
+      summary: Update Approach Point for a given driver [NOT YET IMPLEMENTED]
+      description: Update Approach Point for a given driver [NOT YET IMPLEMENTED]
+      tags:
+        - 00 - All
+        - 11 - Approach Points
+        - 23 - Update
+      parameters:
+        - name: driverId
+          in: path
+          description: Driver unique identifier
+          required: true
+          type: string
+        - name: appId
+          in: path
+          description: ApproachPoint unique identifier
+          required: true
+          type: string
+        - name: approachPoint
+          in: body
+          description: The Approach Point to be updated
+          required: true
+          schema:
+            $ref: '#/definitions/ApproachPoint'
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+  '/drivers/{driverId}/licenses':
+    get:
+      operationId: viewDriverLicenses
+      summary: View the list of Driving Licenses of the given driver [NOT YET IMPLEMENTED]
+      description: View the list of Driving Licenses of the given driver [NOT YET IMPLEMENTED]
+      tags:
+        - 00 - All
+        - 12 - Licenses
+        - 21 - Find
+      parameters:
+        - name: driverId
+          in: path
+          description: Driver unique identifier
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/License'
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+    post:
+      operationId: createDriverLicense
+      summary: Create Driving License for a given driver
+      description: Create Driving License for a given driver
+      tags:
+        - 00 - All
+        - 12 - Licenses
+        - 22 - Create
+      parameters:
+        - name: driverId
+          in: path
+          description: Driver unique identifier
+          required: true
+          type: string
+        - name: license
+          in: body
+          description: The License to be created
+          required: true
+          schema:
+            $ref: '#/definitions/License'
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+  '/drivers/{driverId}/licenses/{licenseId}':
+    put:
+      operationId: updateDriverLicense
+      summary: Update Driving License for a given driver
+      description: Update Driving License for a given driver
+      tags:
+        - 00 - All
+        - 12 - Licenses
+        - 23 - Update
+      parameters:
+        - name: driverId
+          in: path
+          description: Driver unique identifier
+          required: true
+          type: string
+        - name: licenseId
+          in: path
+          description: License unique identifier
+          required: true
+          type: string
+        - name: license
+          in: body
+          description: The License to be updated
+          required: true
+          schema:
+            $ref: '#/definitions/License'
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+  '/drivers/{driverId}/legalids':
+    get:
+      operationId: viewDriverLegalIDs
+      summary: View the list of Legal Ids of the given driver [NOT YET IMPLEMENTED]
+      description: View the list of Legal Ids of the given driver [NOT YET IMPLEMENTED]
+      tags:
+        - 00 - All
+        - 13 - LegalIDs
+        - 21 - Find
+      parameters:
+        - name: driverId
+          in: path
+          description: Driver unique identifier
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/LegalID'
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+    post:
+      operationId: createDriverLegalID
+      summary: Create Legal Id for a given driver
+      description: Create Legal Id for a given driver
+      tags:
+        - 00 - All
+        - 13 - LegalIDs
+        - 22 - Create
+      parameters:
+        - name: driverId
+          in: path
+          description: Driver unique identifier
+          required: true
+          type: string
+        - name: legalId
+          in: body
+          description: The Legal Id to be created
+          required: true
+          schema:
+            $ref: '#/definitions/LegalID'
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+  '/drivers/{driverId}/legalids/{legId}':
+    put:
+      operationId: updateDriverLegalID
+      summary: Update Legal Id for a given driver
+      description: Update Legal Id for a given driver
+      tags:
+        - 00 - All
+        - 13 - LegalIDs
+        - 23 - Update
+      parameters:
+        - name: driverId
+          in: path
+          description: Driver unique identifier
+          required: true
+          type: string
+        - name: legId
+          in: path
+          description: LegalId unique identifier
+          required: true
+          type: string
+        - name: legalId
+          in: body
+          description: The Legal Id to be updated
+          required: true
+          schema:
+            $ref: '#/definitions/LegalID'
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+  '/drivers/{driverId}/mailings':
+    get:
+      operationId: viewDriverMailing
+      summary: View Branding (list of Mailings) of the given driver [NOT YET IMPLEMENTED]
+      description: View Branding (list of Mailings) of the given driver [NOT YET IMPLEMENTED]
+      tags:
+        - 00 - All
+        - 14 - Mailings
+        - 21 - Find
+      parameters:
+        - name: driverId
+          in: path
+          description: Driver unique identifier
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Mailing'
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+    post:
+      operationId: createDriverMailing
+      summary: Create a new Mailing for a given driver and add it to his Branding Mailing list [NOT YET IMPLEMENTED]
+      description: Create a new Mailing for a given driver and add it to his Branding Mailing list [NOT YET IMPLEMENTED]
+      tags:
+        - 00 - All
+        - 14 - Mailings
+        - 22 - Create
+      parameters:
+        - name: driverId
+          in: path
+          description: Driver unique identifier
+          required: true
+          type: string
+        - name: mailing
+          in: body
+          description: The Mailing to be created
+          required: true
+          schema:
+            $ref: '#/definitions/Mailing'
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+    put:
+      operationId: updateDriverMailing
+      summary: Update Branding Mailing for a given driver [NOT YET IMPLEMENTED]
+      description: Update Branding Mailing for a given driver [NOT YET IMPLEMENTED]
+      tags:
+        - 00 - All
+        - 14 - Mailings
+        - 23 - Update
+      parameters:
+        - name: driverId
+          in: path
+          description: Driver unique identifier
+          required: true
+          type: string
+        - name: mailing
+          in: body
+          description: The Mailing Id to be updated
+          required: true
+          schema:
+            $ref: '#/definitions/Mailing'
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+  '/drivers/{driverId}/preferences':
+    get:
+      operationId: viewDriverPreferences
+      summary: View the Preferences of the given driver [NOT YET IMPLEMENTED]
+      description: View the Preferences of the given driver [NOT YET IMPLEMENTED]
+      tags:
+        - 00 - All
+        - 15 - Preferences
+        - 21 - Find
+      parameters:
+        - name: driverId
+          in: path
+          description: Driver unique identifier
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/TravelPreferences'
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+    put:
+      operationId: updateDriverPreferences
+      summary: Update the Preferences of the given driver [NOT YET IMPLEMENTED]
+      description: Update the Preferences of the given driver [NOT YET IMPLEMENTED]
+      tags:
+        - 00 - All
+        - 15 - Preferences
+        - 23 - Update
+      parameters:
+        - name: driverId
+          in: path
+          description: Driver unique identifier
+          required: true
+          type: string
+        - name: preferences
+          in: body
+          description: The Preferences to be updated
+          required: true
+          schema:
+            $ref: '#/definitions/TravelPreferences'
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+  '/drivers/{driverId}/cards':
+    get:
+      operationId: viewDriverCards
+      summary: View the list of Cards of the given driver [NOT YET IMPLEMENTED]
+      description: View the list of Cards of the given driver [NOT YET IMPLEMENTED]
+      tags:
+        - 00 - All
+        - 16 - Cards
+        - 21 - Find
+      parameters:
+        - name: driverId
+          in: path
+          description: Driver unique identifier
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Card'
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+    post:
+      operationId: createDriverCard
+      summary: Create a new Card for a given driver
+      description: Create a new Card for a given driver
+      tags:
+        - 00 - All
+        - 16 - Cards
+        - 22 - Create
+      parameters:
+        - name: driverId
+          in: path
+          description: Driver unique identifier
+          required: true
+          type: string
+        - name: card
+          in: body
+          description: The Card to be created
+          required: true
+          schema:
+            $ref: '#/definitions/Card'
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+    put:
+      operationId: updateDriverCard
+      summary: Update Card for a given driver
+      description: Update Card for a given driver
+      tags:
+        - 00 - All
+        - 16 - Cards
+        - 23 - Update
+      parameters:
+        - name: driverId
+          in: path
+          description: Driver unique identifier
+          required: true
+          type: string
+        - name: card
+          in: body
+          description: The Card to be updated
+          required: true
+          schema:
+            $ref: '#/definitions/Card'
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+definitions:
+  Driver:
+    description: Driver
+    type: object
+    properties:
+      driverId:
+        type: integer
+        format: int64
+      status:
+        $ref: '#/definitions/Status'
+      admin:
+        $ref: '#/definitions/Admin'
+      approachPoints:
+        type: array
+        items:
+          $ref: '#/definitions/ApproachPoint'
+      licenses:
+        type: array
+        items:
+          $ref: '#/definitions/License'
+      legalIds:
+        type: array
+        items:
+          $ref: '#/definitions/LegalID'
+      contract:
+        $ref: '#/definitions/Contract'
+      mailings:
+        type: array
+        items:
+          $ref: '#/definitions/Mailing'
+      extReferences:
+        type: array
+        items:
+          $ref: '#/definitions/ExtReference'
+      services:
+        type: array
+        items:
+          $ref: '#/definitions/Services'
+      travelPreferences:
+        $ref: '#/definitions/TravelPreferences'
+      trackings:
+        type: array
+        items:
+          $ref: '#/definitions/Tracking'
+      serviceLevel:
+        $ref: '#/definitions/ServiceLevel'
+      preferedMOP:
+        type: array
+        items:
+          $ref: '#/definitions/PreferedMOP'
+  Status:
+    description: Status
+    type: object
+    properties:
+      dvrStatus:
+        type: string
+        enum:
+          - A
+          - C
+          - NA
+          - NB
+          - NM
+          - NP
+          - NT
+          - NX
+          - NC
+      dvrStatusLbl:
+        type: string
+      mktStatus:
+        type: string
+        enum:
+          - H
+          - P
+          - R
+          - T
+          - U
+      mktStatusLbl:
+        type: string
+      duplicate:
+        type: string
+      parentId:
+        type: integer
+        format: int64
+  Admin:
+    description: Admin
+    type: object
+    properties:
+      lastName:
+        type: string
+      firstName:
+        type: string
+      title:
+        type: string
+      sex:
+        type: string
+        enum:
+          - M
+          - F
+      birthDate:
+        type: string
+        format: date
+      birthCountry:
+        type: string
+      birthCountryLbl:
+        type: string
+      birthCity:
+        type: string
+      residenceCountry:
+        type: string
+      residenceCountryLbl:
+        type: string
+      language:
+        type: string
+      languageLbl:
+        type: string
+  ApproachPoint:
+    description: ApproachPoint
+    type: object
+    properties:
+      appId:
+        type: integer
+        format: int64
+      typeCd:
+        type: string
+        enum:
+          - B
+          - D
+          - X
+          - Z
+      typeLbl:
+        type: string
+      typeRef:
+        type: integer
+        format: int64
+      main:
+        type: boolean
+      startDate:
+        type: string
+        format: date
+      endDate:
+        type: string
+        format: date
+      appStatus:
+        type: string
+      appStatusLbl:
+        type: string
+      orgId:
+        type: integer
+        format: int64
+      orgRoleType:
+        type: string
+      orgRoleTypeLbl:
+        type: string
+      stationCdFor:
+        type: string
+      stationLblFor:
+        type: string
+      stationCdFrom:
+        type: string
+      stationLblFrom:
+        type: string
+      creationDt:
+        type: string
+        format: date
+      lstChngDt:
+        type: string
+        format: date
+      addressNbr:
+        type: integer
+        format: int64
+      addressType:
+        type: string
+        enum:
+          - H
+          - P
+      addressTypeLbl:
+        type: string
+      address:
+        $ref: '#/definitions/Address'
+      emails:
+        type: array
+        items:
+          $ref: '#/definitions/Email'
+      phones:
+        type: array
+        items:
+          $ref: '#/definitions/Phone'
+      contact:
+        $ref: '#/definitions/Contact'
+  Address:
+    description: Address
+    properties:
+      addrId:
+        type: integer
+        format: int64
+      addressLn1:
+        type: string
+      addressLn2:
+        type: string
+      addressLn3:
+        type: string
+      addressLn4:
+        type: string
+      city:
+        type: string
+      postCode:
+        type: string
+      county:
+        type: string
+      countryLbl:
+        type: string
+  Phone:
+    description: Phone
+    properties:
+      telId:
+        type: integer
+        format: int64
+      main:
+        type: boolean
+      typeRef:
+        type: string
+        enum:
+          - F
+          - P
+          - T
+          - M
+      typeLbl:
+        type: string
+      areaCd:
+        type: string
+      nbr:
+        type: string
+      extension:
+        type: string
+  Email:
+    description: Email
+    properties:
+      main:
+        type: boolean
+      addrEml:
+        type: string
+  Contact:
+    description: Contact
+    type: object
+    properties:
+      cntId:
+        type: integer
+        format: int64
+      lastName:
+        type: string
+      firstName:
+        type: string
+      sex:
+        type: string
+      title:
+        type: string
+      businessTitle:
+        type: string
+      businessTitleLbl:
+        type: string
+  License:
+    description: License
+    type: object
+    properties:
+      licId:
+        type: integer
+        format: int64
+      classCd:
+        type: string
+      status:
+        type: string
+      statusLbl:
+        type: string
+      licenseNbr:
+        type: string
+      issueCity:
+        type: string
+      issueCountry:
+        type: string
+      issueCountryLbl:
+        type: string
+      issueDt:
+        type: string
+        format: date
+      expirationDt:
+        type: string
+        format: date
+  LegalID:
+    description: LegalID
+    type: object
+    properties:
+      legIdId:
+        type: integer
+        format: int64
+      type:
+        type: string
+        enum:
+          - I
+          - P
+      status:
+        type: string
+      statusLbl:
+        type: string
+      legalId:
+        type: string
+      issueCity:
+        type: string
+      issueCountry:
+        type: string
+      issueCountryLbl:
+        type: string
+      issueDt:
+        type: string
+        format: date
+      expirationDt:
+        type: string
+        format: date
+  Contract:
+    description: Contract
+    type: object
+    properties:
+      contractId:
+        type: integer
+        format: int64
+      contractName:
+        type: string
+  Mailing:
+    description: Mailing
+    type: object
+    properties:
+      brand:
+        type: string
+      brandLbl:
+        type: string
+      acceptMailing:
+        type: boolean
+  ExtReference:
+    description: ExtReference
+    type: object
+    properties:
+      refCd:
+        type: string
+      refValue:
+        type: string
+      refFreeLbl:
+        type: string
+      mandatoryFlag:
+        type: boolean
+      rank:
+        type: integer
+      format:
+        type: string
+      refContractId:
+        type: integer
+        format: int64
+      refBAID:
+        type: integer
+        format: int64
+  Services:
+    description: Services
+    type: object
+    properties:
+      serviceCd:
+        type: string
+      serviceLbl:
+        type: string
+      serviceID:
+        type: string
+      preferencFlag:
+        type: boolean
+      source:
+        type: string
+      lastUpdateBy:
+        type: string
+      lastUpdateDate:
+        type: string
+        format: date
+  TravelPreferences:
+    description: TravelPreferences
+    type: object
+    properties:
+      vehicleCategory:
+        type: string
+  Tracking:
+    description: Tracking
+    type: object
+    properties:
+      changeType:
+        type: string
+      user:
+        type: string
+      date:
+        type: string
+        format: date
+  ServiceLevel:
+    description: ServiceLevel
+    type: object
+    properties:
+      level:
+        type: string
+      levelLbl:
+        type: string
+      requestDt:
+        type: string
+        format: date
+      acceptDt:
+        type: string
+        format: date
+      status:
+        type: string
+      statusLbl:
+        type: string
+      thwFlag:
+        type: boolean
+      cdwFlag:
+        type: boolean
+      paiFlag:
+        type: boolean
+      mopFulfilled:
+        type: string
+      lndFulfilled:
+        type: string
+  PreferedMOP:
+    description: PreferedMOP
+    type: object
+    properties:
+      prefMopId:
+        type: integer
+        format: int64
+      rank:
+        type: integer
+      mopCd:
+        type: string
+      mopLbl:
+        type: string
+      mopType:
+        type: string
+      status:
+        type: string
+      statusLbl:
+        type: string
+      expiryDt:
+        type: string
+        format: date
+      cardNbr:
+        type: string
+      ccdcId:
+        type: integer
+        format: int64
+      conversionCurrencyFlag:
+        type: boolean
+  Card:
+    description: Card
+    type: object
+    properties:
+      dummy01:
+        type: string
+      dummy02:
+        type: string
+  error:
+    description: error
+    type: object
+    properties:
+      id:
+        type: string
+      description:
+        type: string
+      messages:
+        type: array
+        items:
+          type: string
